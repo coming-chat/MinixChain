@@ -46,8 +46,8 @@ pipeline {
                 variable: 'KUBECONFIG')
               ])
               {
-                sh 'envsubst <  deploy/pre/deploy-wallet-server.yaml | kubectl apply -f -'
-                sh 'envsubst <  deploy/pre/deploy-wallet-server-svc.yaml  | kubectl apply -f -'
+                sh 'envsubst <  deploy/pre/minix-deploy.yaml | kubectl apply -f -'
+                sh 'envsubst <  deploy/pre/minix-deploy-svc.yaml  | kubectl apply -f -'
               }
             }
 

@@ -8,8 +8,8 @@ pipeline {
     DOCKER_CREDENTIAL_ID = 'dockerhub-id'
     KUBECONFIG_CREDENTIAL_ID = 'admin'
     REGISTRY = 'docker.io'
-    DOCKERHUB_NAMESPACE = 'comingchat'
-    APP_NAME = 'coming-wallet-server'
+    DOCKERHUB_NAMESPACE = 'minix'
+    APP_NAME = 'minix-chain'
   }
 
 
@@ -46,8 +46,8 @@ pipeline {
                 variable: 'KUBECONFIG')
               ])
               {
-                sh 'envsubst <  deploy/pre/deploy-wallet-server.yaml | kubectl apply -f -'
-                sh 'envsubst <  deploy/pre/deploy-wallet-server-svc.yaml  | kubectl apply -f -'
+                sh 'envsubst <  deploy/pre/minix-deploy.yaml | kubectl apply -f -'
+                sh 'envsubst <  deploy/pre/minix-deploy-svc.yaml  | kubectl apply -f -'
               }
             }
 
