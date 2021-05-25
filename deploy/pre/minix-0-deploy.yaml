@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: minix-chain-0
-  namespace: prod
+  namespace: pre
   labels:
     app: minix-chain-0
 spec:
