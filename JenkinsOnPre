@@ -9,7 +9,7 @@ pipeline {
     KUBECONFIG_CREDENTIAL_ID = 'admin'
     REGISTRY = 'docker.io'
     DOCKERHUB_NAMESPACE = 'comingweb3'
-    APP_NAME = 'minix-chain'
+    APP_NAME = 'minix-chain-pre'
   }
 
 
@@ -46,7 +46,16 @@ pipeline {
                 variable: 'KUBECONFIG')
               ])
               {
-                sh 'kubectl apply -f deploy/pre/'
+
+                sh 'envsubst <  deploy/pre/minix-0-deploy | kubectl apply -f -'
+                sh 'sleep 30s'
+                sh 'envsubst <  deploy/pre/minix-0-deploy-svc.yaml  | kubectl apply -f -'
+                sh 'envsubst <  deploy/pre/minix-1-deploy | kubectl apply -f -'
+                sh 'sleep 30s'
+                sh 'envsubst <  deploy/pre/minix-1-deploy-svc.yaml  | kubectl apply -f -'
+                sh 'envsubst <  deploy/pre/minix-extrenal-deploy | kubectl apply -f -'
+                sh 'sleep 30s'
+                sh 'envsubst <  deploy/pre/minix-extrenal-deploy-svc.yaml  | kubectl apply -f -'
               }
             }
 
