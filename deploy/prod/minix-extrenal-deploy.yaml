@@ -53,7 +53,6 @@ spec:
             - '--base-path=external'
             - '--ws-port=9999'
             - '--rpc-port=8888'
-            - '--bootnodes'
             - '--rpc-cors=all'
             - '--validator'
           ports:
