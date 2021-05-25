@@ -19,6 +19,10 @@ spec:
       volumes:
         - name: chain-data
           emptyDir: {}
+        - name: chain-spec
+          configMap:
+              name: chain-config
+              defaultMode: 420
       initContainers:
         - name: install
           image: 'busybox:1.28'
@@ -26,14 +30,14 @@ spec:
             - /bin/sh
             - '-c'
             - >-
-              wget -O /work-dir/rococo-local-raw.json
-              https://aws-k8s-config-zen.s3-ap-northeast-1.amazonaws.com/rococo-local-raw.json;
-              wget -O /work-dir/200.json
-              https://aws-k8s-config-zen.s3-ap-northeast-1.amazonaws.com/200.json
+              echo 'init minix chain'
           resources: {}
           volumeMounts:
             - name: chain-data
               mountPath: /work-dir
+            - name: chain_spec.json
+              mountPath: /etc/config/chain_spec.json
+              subPath: chain_spec.json
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: Always
@@ -41,8 +45,8 @@ spec:
         - name: minix-chain
           image: 
           args:
+            - '--chain=/etc/config/chain_spec.json'
             - '--validator'
-            
           ports:
             - name: rpc
               containerPort: 8888
