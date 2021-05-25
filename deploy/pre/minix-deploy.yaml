@@ -41,34 +41,8 @@ spec:
         - name: minix-chain
           image: 
           args:
-            - '--name'
-            - para200-s
-            - '--port'
-            - '30033'
-            - '--ws-port'
-            - '9944'
-            - '--rpc-port'
-            - '10001'
-            - '--rpc-cors'
-            - 'all'
-            - '--unsafe-rpc-external'
-            - '--unsafe-ws-external'
-            - '--ws-max-connections'
-            - '10000'
-            - '--parachain-id'
-            - '200'
             - '--validator'
-            - '-d'
-            - /data
-            - '--execution=wasm'
-            - >-
-              -lruntime=debug,cumulus-collator=trace,cumulus-network=trace,cumulus-consensus=trace
-            - '--chain'
-            - /data/200.json
-            - '--'
-            - '--chain'
-            - /data/rococo-local-raw.json
-            - '--execution=wasm'
+            
           ports:
             - name: rpc
               containerPort: 8888

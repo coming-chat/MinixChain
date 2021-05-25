@@ -16,7 +16,7 @@ spec:
     - name: tcp-8888
       protocol: TCP
       port: 8887
-      targetPort: 9999
+      targetPort: 8888
   selector:
     app: minix-chainx-svc
 status:
