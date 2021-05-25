@@ -781,6 +781,7 @@ dependencies = [
  "rand 0.7.3",
  "sc-chain-spec",
  "sc-keystore",
+ "sc-service",
  "sp-core",
  "sp-keystore",
  "structopt",
@@ -3799,7 +3800,7 @@ dependencies = [
 
 [[package]]
 name = "minix"
-version = "3.0.0"
+version = "1.0.0"
 dependencies = [
  "frame-benchmarking",
  "frame-benchmarking-cli",
