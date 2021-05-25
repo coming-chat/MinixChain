@@ -1,0 +1,97 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: minix-chainx
+  namespace: pre
+  labels:
+    app: minix-chainx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minix-chainx
+  template:
+     metadata:
+      creationTimestamp: null
+      labels:
+        app: minix-chainx
+    spec:
+      volumes:
+        - name: chain-data
+          emptyDir: {}
+      initContainers:
+        - name: install
+          image: 'busybox:1.28'
+          args:
+            - /bin/sh
+            - '-c'
+            - >-
+              wget -O /work-dir/rococo-local-raw.json
+              https://aws-k8s-config-zen.s3-ap-northeast-1.amazonaws.com/rococo-local-raw.json;
+              wget -O /work-dir/200.json
+              https://aws-k8s-config-zen.s3-ap-northeast-1.amazonaws.com/200.json
+          resources: {}
+          volumeMounts:
+            - name: chain-data
+              mountPath: /work-dir
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      containers:
+        - name: node-200
+          image: zenlinkpro/dev-parachain
+          args:
+            - '--name'
+            - para200-s
+            - '--port'
+            - '30033'
+            - '--ws-port'
+            - '9944'
+            - '--rpc-port'
+            - '10001'
+            - '--rpc-cors'
+            - 'all'
+            - '--unsafe-rpc-external'
+            - '--unsafe-ws-external'
+            - '--ws-max-connections'
+            - '10000'
+            - '--parachain-id'
+            - '200'
+            - '--validator'
+            - '-d'
+            - /data
+            - '--execution=wasm'
+            - >-
+              -lruntime=debug,cumulus-collator=trace,cumulus-network=trace,cumulus-consensus=trace
+            - '--chain'
+            - /data/200.json
+            - '--'
+            - '--chain'
+            - /data/rococo-local-raw.json
+            - '--execution=wasm'
+          ports:
+            - name: rpc
+              containerPort: 8888
+              protocol: TCP
+            - name: websocket
+              containerPort: 9999
+              protocol: TCP
+
+          resources: {}
+          volumeMounts:
+            - name: chain-data
+              mountPath: /data
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      imagePullSecrets:
+        - name: registry-key
+      schedulerName: default-scheduler
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
