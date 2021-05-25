@@ -46,8 +46,8 @@ pipeline {
                 variable: 'KUBECONFIG')
               ])
               {
-                sh 'envsubst <  deploy/pre/minix-deploy.yaml | kubectl apply -f -'
-                sh 'envsubst <  deploy/pre/minix-deploy-svc.yaml  | kubectl apply -f -'
+                sh 'kubectl apply -f deploy/pre/minix-deploy.yaml'
+                sh 'kubectl apply -f deploy/pre/minix-deploy-svc.yaml'
               }
             }
 
