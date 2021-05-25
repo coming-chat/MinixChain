@@ -16,6 +16,8 @@ spec:
       labels:
         app: minix-chain
     spec:
+      imagePullSecrets:
+        - name: regcred
       volumes:
         - name: chain-data
           emptyDir: {}
