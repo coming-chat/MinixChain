@@ -17,7 +17,7 @@ pipeline {
     
     stage('拉取代码') {
       steps {
-        git(branch: 'pre', url: 'https://github.com/coming-chat/coming-wallet-server.git', credentialsId: 'github-id', changelog: true, poll: false)
+        git(branch: 'main', url: 'https://github.com/coming-chat/MinixChain.git', credentialsId: 'github-id', changelog: true, poll: false)
       }
     }
 
