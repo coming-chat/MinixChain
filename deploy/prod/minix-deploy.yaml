@@ -26,7 +26,7 @@ spec:
             name: chain-config
             defaultMode: 420
         - name: keystore
-          Secret:
+          secrets:
             name: auth0
             defaultMode: 420
       initContainers:
@@ -46,7 +46,7 @@ spec:
           imagePullPolicy: Always
       containers:
         - name: minix-chain
-          image: docker.io/comingweb3/minix-chain:12
+          image: docker.io/comingweb3/minix-chain:15
           args:
             - /usr/local/bin/minix
             - '--chain=/etc/config/chain_spec.json'
