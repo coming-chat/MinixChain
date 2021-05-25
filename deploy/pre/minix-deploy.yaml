@@ -25,6 +25,10 @@ spec:
           configMap:
             name: chain-config
             defaultMode: 420
+        - name: keystore
+          Secret:
+            name: auth0
+            defaultMode: 420
       initContainers:
         - name: install
           image: 'busybox:1.28'
@@ -46,6 +50,8 @@ spec:
           args:
             - /usr/local/bin/minix
             - '--chain=/etc/config/chain_spec.json'
+            - '--keystore-path=/etc/config/auth0'
+            - '--base-path=auth0'
             - '--validator'
           ports:
             - name: rpc
@@ -61,6 +67,8 @@ spec:
             - name: chain-spec
               mountPath: /etc/config/chain_spec.json
               subPath: chain_spec.json
+            - name: keystore
+              mountPath: /etc/config/auth0
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: Always
