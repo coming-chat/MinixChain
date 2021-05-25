@@ -44,6 +44,7 @@ spec:
         - name: minix-chain
           image: docker.io/comingweb3/minix-chain:12
           args:
+            - /usr/local/bin/minix
             - '--chain=/etc/config/chain_spec.json'
             - '--validator'
           ports:
@@ -55,7 +56,7 @@ spec:
               protocol: TCP
           resources: {}
           volumeMounts:
-            - name: chain-data
+            - name: chain-data   
               mountPath: /data
             - name: chain-spec
               mountPath: /etc/config/chain_spec.json
