@@ -11,11 +11,11 @@ spec:
   ports:
     - name: tcp-9999
       protocol: TCP
-      port: 9998
+      port: 9990
       targetPort: 9999
     - name: tcp-8888
       protocol: TCP
-      port: 8887
+      port: 8880
       targetPort: 8888
   selector:
     app: minix-chainx-svc

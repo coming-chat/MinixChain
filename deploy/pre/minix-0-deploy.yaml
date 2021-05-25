@@ -1,20 +1,20 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: minix-chain
+  name: minix-chain-0
   namespace: prod
   labels:
-    app: minix-chain
+    app: minix-chain-0
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: minix-chain
+      app: minix-chain-0
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: minix-chain
+        app: minix-chain-0
     spec:
       imagePullSecrets:
         - name: regcred
@@ -26,8 +26,8 @@ spec:
             name: chain-config
             defaultMode: 420
         - name: keystore
-          secrets:
-            name: auth0
+          secret:
+            secretName: auth0
             defaultMode: 420
       initContainers:
         - name: install
@@ -45,13 +45,17 @@ spec:
           terminationMessagePolicy: File
           imagePullPolicy: Always
       containers:
-        - name: minix-chain
-          image: docker.io/comingweb3/minix-chain:15
+        - name: minix-chain-0
+          image: $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:$BUILD_NUMBER
           args:
             - /usr/local/bin/minix
             - '--chain=/etc/config/chain_spec.json'
             - '--keystore-path=/etc/config/auth0'
             - '--base-path=auth0'
+            - '--ws-port=9999'
+            - '--rpc-port=8888'
+            - '--bootnodes'
+            - '--rpc-cors=all'
             - '--validator'
           ports:
             - name: rpc
