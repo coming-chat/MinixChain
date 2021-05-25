@@ -3,7 +3,7 @@ LABEL description="The build stage for MinixChain. We create the MinixChain bina
 
 ARG PROFILE=release
 ARG APP=minix
-ARG RUSTC_VERSION=nightly
+ARG RUSTC_VERSION=nightly-2021-05-24
 
 WORKDIR /$APP
 
