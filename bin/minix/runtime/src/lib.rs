@@ -38,9 +38,7 @@ pub use frame_support::{
 	},
 };
 use pallet_transaction_payment::CurrencyAdapter;
-
-/// Import the template pallet.
-pub use pallet_template;
+use pallet_coming_id::{Cid, CidDetails};
 
 /// An index to a block.
 pub type BlockNumber = u32;
@@ -145,7 +143,7 @@ parameter_types! {
 		::with_sensible_defaults(2 * WEIGHT_PER_SECOND, NORMAL_DISPATCH_RATIO);
 	pub BlockLength: frame_system::limits::BlockLength = frame_system::limits::BlockLength
 		::max_with_normal_ratio(5 * 1024 * 1024, NORMAL_DISPATCH_RATIO);
-	pub const SS58Prefix: u8 = 42;
+	pub const SS58Prefix: u8 = 44;
 }
 
 // Configure FRAME pallets to include in runtime.
@@ -268,10 +266,36 @@ impl pallet_sudo::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
 }
+/*
+parameter_types! {
+    pub const MaxCommodities: u128 = 5;
+    pub const MaxCommoditiesPerUser: u64 = 2;
+}*/
 
+/*
 /// Configure the pallet-template in pallets/template.
-impl pallet_template::Config for Runtime {
+impl pallet_commodities::Config for Runtime {
 	type Event = Event;
+    type CommodityAdmin = frame_system::EnsureRoot<AccountId>;
+    type CommodityInfo = Vec<u8>;
+    type CommodityLimit = MaxCommodities;
+    type UserCommodityLimit = MaxCommoditiesPerUser;
+}*/
+parameter_types! {
+	pub const ClaimValidatePeriod: BlockNumber = 600;
+	pub const CidsLimit: u32 = 500;
+}
+
+/// Configure the pallet-coming-id in pallets/coming-id.
+impl pallet_coming_id::Config for Runtime {
+	type Event = Event;
+	type WeightInfo = pallet_coming_id::weights::SubstrateWeight<Runtime>;
+}
+
+impl pallet_utility::Config for Runtime {
+	type Event = Event;
+	type Call = Call;
+	type WeightInfo = ();
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
@@ -289,8 +313,9 @@ construct_runtime!(
 		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
 		TransactionPayment: pallet_transaction_payment::{Pallet, Storage},
 		Sudo: pallet_sudo::{Pallet, Call, Config<T>, Storage, Event<T>},
-		// Include the custom logic from the pallet-template in the runtime.
-		TemplateModule: pallet_template::{Pallet, Call, Storage, Event<T>},
+		//NFT: pallet_commodities::{Pallet, Call, Config<T>, Storage, Event<T>},
+		ComingId: pallet_coming_id::{Pallet, Call, Config<T>, Storage, Event<T>},
+		Utility: pallet_utility::{Pallet, Call, Event},
 	}
 );
 
@@ -457,6 +482,20 @@ impl_runtime_apis! {
 		}
 	}
 
+	impl pallet_coming_id_rpc_runtime_api::ComingIdApi<Block, AccountId> for Runtime {
+		fn get_account_id(cid: Cid) -> Option<AccountId> {
+			ComingId::get_account_id(cid)
+		}
+
+		fn get_cids(account: AccountId) -> Vec<Cid> {
+			ComingId::get_cids(account)
+		}
+
+		fn get_bond_data(cid: Cid) -> Option<CidDetails<AccountId>> {
+			ComingId::get_bond_data(cid)
+		}
+	}
+
 	#[cfg(feature = "runtime-benchmarks")]
 	impl frame_benchmarking::Benchmark<Block> for Runtime {
 		fn dispatch_benchmark(
@@ -486,7 +525,7 @@ impl_runtime_apis! {
 			add_benchmark!(params, batches, frame_system, SystemBench::<Runtime>);
 			add_benchmark!(params, batches, pallet_balances, Balances);
 			add_benchmark!(params, batches, pallet_timestamp, Timestamp);
-			add_benchmark!(params, batches, pallet_template, TemplateModule);
+			add_benchmark!(params, batches, pallet_coming_id, ComingId);
 
 			if batches.is_empty() { return Err("Benchmark not found for this pallet.".into()) }
 			Ok(batches)
