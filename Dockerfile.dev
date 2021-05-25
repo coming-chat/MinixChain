@@ -1,5 +1,5 @@
 FROM phusion/baseimage:0.11 as builder
-LABEL description="The build stage for MinixChain. We create the ChainX binary in this stage."
+LABEL description="The build stage for MinixChain. We create the MinixChain binary in this stage."
 
 ARG PROFILE=release
 ARG APP=minix
