@@ -46,12 +46,12 @@ pipeline {
                 variable: 'KUBECONFIG')
               ])
               {
-                sh 'envsubst <  deploy/prod/minix-0-deploy | kubectl apply -f -'
-                sh 'envsubst <  deploy/prod/minix-0-deploy-svc.yaml  | kubectl apply -f -'
-                sh 'envsubst <  deploy/prod/minix-1-deploy | kubectl apply -f -'
-                sh 'envsubst <  deploy/prod/minix-1-deploy-svc.yaml  | kubectl apply -f -'
-                sh 'envsubst <  deploy/prod/minix-extrenal-deploy | kubectl apply -f -'
+                sh 'envsubst <  deploy/prod/minix-0-deploy.yaml | kubectl apply -f -'
+                sh 'envsubst <  deploy/prod/minix-0-deploy-svc.yaml | kubectl apply -f -'
+                sh 'envsubst <  deploy/prod/minix-1-deploy.yaml | kubectl apply -f -'
+                sh 'envsubst <  deploy/prod/minix-1-deploy-svc.yaml | kubectl apply -f -'
                 sh 'sleep 60s'
+                sh 'envsubst <  deploy/prod/minix-extrenal-deploy.yaml | kubectl apply -f -'
                 sh 'envsubst <  deploy/prod/minix-extrenal-deploy-svc.yaml  | kubectl apply -f -'
               }
             }
