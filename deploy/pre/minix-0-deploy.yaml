@@ -95,7 +95,3 @@ spec:
         volumeMode: Filesystem
       status:
         phase: Pending
-  strategy:
-    type: RollingUpdate
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
