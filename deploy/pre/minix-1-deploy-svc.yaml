@@ -1,10 +1,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: minix-chainx-svc
+  name: minix-chain-1-svc
   namespace: pre
   labels:
-    app: minix-chainx-svc
+    app: minix-chain-1-svc
   finalizers:
     - service.kubernetes.io/load-balancer-cleanup
 spec:
@@ -18,6 +18,6 @@ spec:
       port: 8881
       targetPort: 8888
   selector:
-    app: minix-chainx-svc
+    app: minix-chain-1
 status:
   loadBalancer: {}

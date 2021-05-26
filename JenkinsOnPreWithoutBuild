@@ -1,0 +1,53 @@
+pipeline {
+  agent {
+    node {
+      label 'base'
+    }
+  }
+  environment {
+    DOCKER_CREDENTIAL_ID = 'dockerhub-id'
+    KUBECONFIG_CREDENTIAL_ID = 'admin'
+    REGISTRY = 'docker.io'
+    DOCKERHUB_NAMESPACE = 'comingweb3'
+    APP_NAME = 'minix-chain-pre'
+  }
+
+
+  stages {
+    
+    stage('拉取代码') {
+      steps {
+        git(branch: 'pre', url: 'https://github.com/coming-chat/MinixChain.git', credentialsId: 'github-id', changelog: true, poll: false)
+      }
+    }
+
+
+    stage('部署') {
+      steps {
+        container('base') {
+          script {
+            withCredentials([
+              kubeconfigFile(
+                credentialsId: 'admin',
+                variable: 'KUBECONFIG')
+              ])
+              {
+
+                sh 'envsubst <  deploy/pre/minix-0-deploy.yaml | kubectl apply -f -'
+                sh 'envsubst <  deploy/pre/minix-0-deploy-svc.yaml | kubectl apply -f -'
+                sh 'envsubst <  deploy/pre/minix-1-deploy.yaml | kubectl apply -f -'
+                sh 'envsubst <  deploy/pre/minix-1-deploy-svc.yaml | kubectl apply -f -'
+                sh 'sleep 60s'
+                sh 'envsubst <  deploy/pre/minix-extrenal-deploy.yaml | kubectl apply -f -'
+                sh 'envsubst <  deploy/pre/minix-extrenal-deploy-svc.yaml  | kubectl apply -f -'
+              }
+            }
+
+        }
+
+      }
+      
+    }
+  
+  }
+}

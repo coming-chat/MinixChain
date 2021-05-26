@@ -1,4 +1,4 @@
-kind: Deployment
+kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: minix-chain-extrenal
@@ -64,8 +64,8 @@ spec:
               protocol: TCP
           resources: {}
           volumeMounts:
-            - name: chain-data   
-              mountPath: /data
+            - name: minix-data  
+              mountPath: /external
             - name: chain-spec
               mountPath: /etc/config/chain_spec.json
               subPath: chain_spec.json
@@ -79,6 +79,21 @@ spec:
       dnsPolicy: ClusterFirst
       securityContext: {}
       schedulerName: default-scheduler
+  volumeClaimTemplates:
+    - kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: minix-data
+        creationTimestamp: null
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 10

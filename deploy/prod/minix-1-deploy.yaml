@@ -1,20 +1,20 @@
-kind: Deployment
+kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  name: minix-chain
+  name: minix-chain-1
   namespace: prod
   labels:
-    app: minix-chain
+    app: minix-chain-1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: minix-chain
+      app: minix-chain-1
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: minix-chain
+        app: minix-chain-1
     spec:
       imagePullSecrets:
         - name: regcred
@@ -45,7 +45,7 @@ spec:
           terminationMessagePolicy: File
           imagePullPolicy: Always
       containers:
-        - name: minix-chain
+        - name: minix-chain-1
           image: $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:$BUILD_NUMBER
           args:
             - /usr/local/bin/minix
@@ -65,8 +65,8 @@ spec:
               protocol: TCP
           resources: {}
           volumeMounts:
-            - name: chain-data   
-              mountPath: /data
+            - name: minix-data   
+              mountPath: /auth1
             - name: chain-spec
               mountPath: /etc/config/chain_spec.json
               subPath: chain_spec.json
@@ -80,6 +80,21 @@ spec:
       dnsPolicy: ClusterFirst
       securityContext: {}
       schedulerName: default-scheduler
+  volumeClaimTemplates:
+    - kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: minix-data
+        creationTimestamp: null
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 10
