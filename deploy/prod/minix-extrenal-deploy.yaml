@@ -1,21 +1,3 @@
-# Headless service for stable DNS entries of StatefulSet members.
-apiVersion: v1
-kind: Service
-metadata:
-  name: minix-chain-extrenal
-  namespace: prod
-  labels:
-    app: minix-chain-extrenal
-spec:
-  ports:
-  - name: rpc
-    port: 8888
-  - name: websocket
-    port: 9999
-  clusterIP: None
-  selector:
-    app: minix-chain-extrenal
----
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
@@ -24,6 +6,7 @@ metadata:
   labels:
     app: minix-chain-extrenal
 spec:
+  serviceName: "minix-chain-extrenal"
   replicas: 1
   selector:
     matchLabels:
