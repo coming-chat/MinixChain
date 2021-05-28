@@ -52,6 +52,7 @@ spec:
             - /usr/local/bin/minix
             - '--chain=/etc/config/chain_spec.json'
             - '--base-path=external'
+            - '--discover-local'
             - '--ws-port=9999'
             - '--rpc-port=8888'
             - '--rpc-cors=all'

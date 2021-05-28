@@ -53,6 +53,7 @@ spec:
             - '--chain=/etc/config/chain_spec.json'
             - '--keystore-path=/etc/config/auth1'
             - '--base-path=auth1'
+            - '--discover-local'
             - '--ws-port=9999'
             - '--rpc-port=8888'
             - '--rpc-cors=all'
