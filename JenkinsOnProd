@@ -9,7 +9,7 @@ pipeline {
     KUBECONFIG_CREDENTIAL_ID = 'admin'
     REGISTRY = 'docker.io'
     DOCKERHUB_NAMESPACE = 'comingweb3'
-    APP_NAME = 'minix-chain-prod'
+    APP_NAME = 'minix-chain-pre'
   }
 
 
@@ -27,7 +27,7 @@ pipeline {
         container('base') {
           withCredentials([usernamePassword(credentialsId : "$DOCKER_CREDENTIAL_ID" ,passwordVariable : 'DOCKER_PASSWORD' ,usernameVariable : 'DOCKER_USERNAME' ,)]) {
             sh 'echo "$DOCKER_PASSWORD" | docker login $REGISTRY -u "$DOCKER_USERNAME" --password-stdin'
-            sh 'docker build -f Dockerfile.prod -t $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:$BUILD_NUMBER .'
+            sh 'docker build -f Dockerfile.dev -t $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:$BUILD_NUMBER .'
             sh 'docker push $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:$BUILD_NUMBER'
           }
 
@@ -46,6 +46,7 @@ pipeline {
                 variable: 'KUBECONFIG')
               ])
               {
+
                 sh 'envsubst <  deploy/prod/minix-0-deploy.yaml | kubectl apply -f -'
                 sh 'envsubst <  deploy/prod/minix-0-deploy-svc.yaml | kubectl apply -f -'
                 sh 'envsubst <  deploy/prod/minix-1-deploy.yaml | kubectl apply -f -'

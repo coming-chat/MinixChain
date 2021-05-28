@@ -1,10 +1,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: minix-chain-extrenal-svc
+  name: minix-chain-extrenal
   namespace: pre
   labels:
-    app: minix-chain-extrenal-svc
+    app: minix-chain-extrenal
   finalizers:
     - service.kubernetes.io/load-balancer-cleanup
 spec:

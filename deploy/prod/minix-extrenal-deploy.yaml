@@ -55,7 +55,8 @@ spec:
             - '--ws-port=9999'
             - '--rpc-port=8888'
             - '--rpc-cors=all'
-            - '--validator'
+            - '--rpc-external'
+            - '--ws-external'
           ports:
             - name: rpc
               containerPort: 8888
