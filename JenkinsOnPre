@@ -48,12 +48,12 @@ pipeline {
               {
 
                 sh 'envsubst <  deploy/pre/minix-0-deploy.yaml | kubectl apply -f -'
-                sh 'envsubst <  deploy/pre/minix-0-deploy-svc.yaml | kubectl apply -f -'
+
                 sh 'envsubst <  deploy/pre/minix-1-deploy.yaml | kubectl apply -f -'
-                sh 'envsubst <  deploy/pre/minix-1-deploy-svc.yaml | kubectl apply -f -'
+               
                 sh 'sleep 60s'
                 sh 'envsubst <  deploy/pre/minix-extrenal-deploy.yaml | kubectl apply -f -'
-                sh 'envsubst <  deploy/pre/minix-extrenal-deploy-svc.yaml  | kubectl apply -f -'
+              
               }
             }
 
