@@ -1,23 +1,29 @@
-kind: Deployment
+kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: minix-chain-1
   namespace: pre
   labels:
     app: minix-chain-1
+    network-mini-pre: minichain-pre
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: >
+      {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"labels":{"app":"minix-chain-1"},"name":"minix-chain-1","namespace":"pre"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"minix-chain-1"}},"serviceName":"minix-chain-1","template":{"metadata":{"creationTimestamp":null,"labels":{"app":"minix-chain-1"}},"spec":{"containers":[{"args":["/usr/local/bin/minix","--chain=/etc/config/chain_spec.json","--keystore-path=/etc/config/auth1","--base-path=auth1","--discover-local","--ws-port=9999","--rpc-port=8888","--rpc-cors=all","--validator"],"image":"docker.io/comingweb3/minix-chain-pre:3","imagePullPolicy":"Always","name":"minix-chain-1","ports":[{"containerPort":8888,"name":"rpc","protocol":"TCP"},{"containerPort":9999,"name":"websocket","protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","volumeMounts":[{"mountPath":"/auth1","name":"minix-data"},{"mountPath":"/etc/config/chain_spec.json","name":"chain-spec","subPath":"chain_spec.json"},{"mountPath":"/etc/config/auth1","name":"keystore"}]}],"dnsPolicy":"ClusterFirst","imagePullSecrets":[{"name":"regcred"}],"initContainers":[{"args":["/bin/sh","-c","echo
+      'init minix
+      chain'"],"image":"busybox:1.28","imagePullPolicy":"Always","name":"install","resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","volumeMounts":[{"mountPath":"/work-dir","name":"chain-data"}]}],"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":30,"volumes":[{"emptyDir":{},"name":"chain-data"},{"configMap":{"defaultMode":420,"name":"chain-config"},"name":"chain-spec"},{"name":"keystore","secret":{"defaultMode":420,"secretName":"auth1"}}]}},"volumeClaimTemplates":[{"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"creationTimestamp":null,"name":"minix-data"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"50Gi"}},"volumeMode":"Filesystem"},"status":{"phase":"Pending"}}]}}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: minix-chain-1
+      network-mini-pre: minichain-pre
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: minix-chain-1
+        network-mini-pre: minichain-pre
     spec:
-      imagePullSecrets:
-        - name: regcred
       volumes:
         - name: chain-data
           emptyDir: {}
@@ -35,8 +41,7 @@ spec:
           args:
             - /bin/sh
             - '-c'
-            - >-
-              echo 'init minix chain'
+            - echo 'init minix chain'
           resources: {}
           volumeMounts:
             - name: chain-data
@@ -46,15 +51,15 @@ spec:
           imagePullPolicy: Always
       containers:
         - name: minix-chain-1
-          image: $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:$BUILD_NUMBER
+          image: 'docker.io/comingweb3/minix-chain-pre:3'
           args:
             - /usr/local/bin/minix
             - '--chain=/etc/config/chain_spec.json'
             - '--keystore-path=/etc/config/auth1'
             - '--base-path=auth1'
+            - '--discover-local'
             - '--ws-port=9999'
             - '--rpc-port=8888'
-            - '--bootnodes'
             - '--rpc-cors=all'
             - '--validator'
           ports:
@@ -66,8 +71,8 @@ spec:
               protocol: TCP
           resources: {}
           volumeMounts:
-            - name: chain-data   
-              mountPath: /data
+            - name: minix-data
+              mountPath: /auth1
             - name: chain-spec
               mountPath: /etc/config/chain_spec.json
               subPath: chain_spec.json
@@ -80,8 +85,28 @@ spec:
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
       securityContext: {}
+      imagePullSecrets:
+        - name: regcred
       schedulerName: default-scheduler
-  strategy:
+  volumeClaimTemplates:
+    - kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: minix-data
+        creationTimestamp: null
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+  serviceName: minix-chain-1
+  podManagementPolicy: OrderedReady
+  updateStrategy:
     type: RollingUpdate
+    rollingUpdate:
+      partition: 0
   revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
