@@ -7,10 +7,10 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      network-mini-pre: minichain-prod
+      network-mini-prod: minichain-prod
   ingress:
     - from:
       - podSelector:
           matchLabels:
-            network-mini-pre: minichain-prod
+            network-mini-prod: minichain-prod
              
