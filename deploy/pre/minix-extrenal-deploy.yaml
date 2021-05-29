@@ -5,17 +5,20 @@ metadata:
   namespace: pre
   labels:
     app: minix-chain-extrenal
+    network-mini-pre: minichain-pre
 spec:
   serviceName: "minix-chain-extrenal"
   replicas: 1
   selector:
     matchLabels:
       app: minix-chain-extrenal
+      network-mini-pre: minichain-pre
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: minix-chain-extrenal
+        network-mini-pre: minichain-pre
     spec:
       imagePullSecrets:
         - name: regcred
@@ -24,7 +27,7 @@ spec:
           emptyDir: {}
         - name: chain-spec
           configMap:
-            name: chain-config
+            name: chain-config 
             defaultMode: 420
         - name: keystore
           secret:
@@ -47,7 +50,7 @@ spec:
           imagePullPolicy: Always
       containers:
         - name: minix-chain-extrenal
-          image: $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:$BUILD_NUMBER
+          image: 'docker.io/comingweb3/minix-chain-pre:3'
           args:
             - /usr/local/bin/minix
             - '--chain=/etc/config/chain_spec.json'

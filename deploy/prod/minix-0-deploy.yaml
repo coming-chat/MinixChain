@@ -5,17 +5,20 @@ metadata:
   namespace: prod
   labels:
     app: minix-chain-0
+    network-mini-pre: minichain-pre
 spec:
   serviceName: "minix-chain-0"
   replicas: 1
   selector:
     matchLabels:
       app: minix-chain-0
+      network-mini-pre: minichain-pre
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: minix-chain-0
+        network-mini-pre: minichain-pre
     spec:
       imagePullSecrets:
         - name: regcred

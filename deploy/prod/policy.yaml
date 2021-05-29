@@ -1,0 +1,16 @@
+# 只允许预发环境下
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: 
+  name: access-mini-chain
+spec:
+  podSelector:
+    matchLabels:
+      network-mini-pre: minichain-prod
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            network-mini-pre: minichain-prod
+             
