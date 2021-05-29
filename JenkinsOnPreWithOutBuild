@@ -21,7 +21,7 @@ pipeline {
       }
     }
 
-    stage('部署') {
+    stage('deploy') {
       steps {
         container('base') {
           script {

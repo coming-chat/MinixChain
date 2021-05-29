@@ -2,15 +2,15 @@
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  namespace: 
+  namespace: prod
   name: access-mini-chain
 spec:
   podSelector:
     matchLabels:
-      network-mini-pre: minichain-prod
+      network-mini-prod: minichain-prod
   ingress:
     - from:
       - podSelector:
           matchLabels:
-            network-mini-pre: minichain-prod
+            network-mini-prod: minichain-prod
              
